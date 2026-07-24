@@ -1,5 +1,6 @@
 import { useRef, useState, type UIEvent, type KeyboardEvent } from "react";
 import { SQL_KEYWORDS, SQL_TYPES, SQL_FUNCTIONS } from "../data/sql-keywords";
+import "../styles/editor.css";
 
 export const EditorComponent = () => {
   const [code, setCode] = useState("");
