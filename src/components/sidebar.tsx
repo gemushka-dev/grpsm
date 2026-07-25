@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../styles/sidebar.css";
 
 type Connection = {
   id: string;
