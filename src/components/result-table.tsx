@@ -1,3 +1,4 @@
+import "../styles/table.css";
 type ResultTableProps = {
   data: Record<string, any>[];
 };
