@@ -1,0 +1,29 @@
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.main-part {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  width: 100%;
+  overflow: hidden;
+}
+
+.sql-part {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+  overflow: hidden;
+}
+.sql-part > :first-child {
+  flex: 1;
+}
+.sql-part > :last-child {
+  flex: 1;
+}
