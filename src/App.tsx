@@ -1,3 +1,5 @@
-export const App = () =>{
-  return <h1>GRPSM v.0.1.0</h1>
-}
+import "./styles/base.css";
+
+export const App = () => {
+  return <h1>GRPSM v.0.1.0</h1>;
+};
