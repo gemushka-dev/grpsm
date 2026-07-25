@@ -4,6 +4,13 @@ type ResultTableProps = {
 };
 
 export const ResultTable = ({ data }: ResultTableProps) => {
+  if (!data || data.length === 0) {
+    return (
+      <div>
+        <span>Waiting for your SQL script</span>
+      </div>
+    );
+  }
   const headers = Object.keys(data[0]);
   return (
     <div className="result-div">
