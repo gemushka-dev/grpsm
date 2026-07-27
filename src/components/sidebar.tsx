@@ -1,14 +1,7 @@
 import { useState } from "react";
+import { Connection } from "../type/connection.type";
 import "../styles/sidebar.css";
 
-type Connection = {
-  id: string;
-  name: string;
-  host: string;
-  port: number;
-  dbName: string;
-  isConnected: boolean;
-};
 type SidebarProps = {
   onNodeSelect: (node: any) => void;
   pgConnections: Connection[];
