@@ -1,0 +1,75 @@
+.move {
+  position: absolute;
+  top: 6.25rem;
+  left: 12.5rem;
+  z-index: 1000;
+  width: 22.5rem;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  color: #0f172a;
+  font-family: inherit;
+  cursor: grab;
+  user-select: none;
+}
+
+.move:active {
+  cursor: grabbing;
+}
+
+.move form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.move label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-bottom: -0.375rem;
+}
+
+.db-conf {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.move-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #0f172a;
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  cursor: text;
+}
+
+.move-input:focus {
+  border-color: #2563eb;
+}
+
+.btn-connect {
+  margin-top: 0.5rem;
+  padding: 0.625rem;
+  border-radius: 0.375rem;
+  border: none;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.btn-connect:hover {
+  background-color: #1d4ed8;
+}
