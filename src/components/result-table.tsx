@@ -6,15 +6,15 @@ type ResultTableProps = {
 export const ResultTable = ({ data }: ResultTableProps) => {
   if (!data || data.length === 0) {
     return (
-      <div>
-        <span>Waiting for your SQL script</span>
+      <div className="result-msg">
+        <span>No data from your SQL query</span>
       </div>
     );
   }
   if (typeof data == "string" || !data[0]) {
     return (
-      <div>
-        <span>Rows affected {data as string}</span>
+      <div className="result-msg">
+        <span>{data as string}</span>
       </div>
     );
   }

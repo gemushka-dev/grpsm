@@ -47,7 +47,7 @@ async fn execute_query(uuid: String, sql:String, state: tauri::State<'_, AppStat
 
             Ok(json!({
                 "type": "mutation",
-                "rows_affected": execution.rows_affected()
+                "rows_affected": format!("Rows affected {}",execution.rows_affected())
             }))
         }
     }
