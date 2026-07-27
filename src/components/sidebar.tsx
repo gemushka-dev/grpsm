@@ -5,15 +5,26 @@ import "../styles/sidebar.css";
 type SidebarProps = {
   onNodeSelect: (node: any) => void;
   pgConnections: Connection[];
+  setConnections: React.Dispatch<React.SetStateAction<Connection[]>>;
 };
 
-export const Sidebar = ({ onNodeSelect, pgConnections }: SidebarProps) => {
+export const Sidebar = ({
+  onNodeSelect,
+  pgConnections,
+  setConnections,
+}: SidebarProps) => {
   const [selectedId, setSelectedId] = useState("");
   const handleConnectClick = (conn: Connection) => {
     setSelectedId(conn.id);
     if (onNodeSelect) {
       onNodeSelect(conn);
     }
+    setConnections((prevConnections) =>
+      prevConnections.map((item) => ({
+        ...item,
+        isConnected: item.id === conn.id,
+      })),
+    );
   };
   return (
     <aside className="sidebar">

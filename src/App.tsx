@@ -31,6 +31,7 @@ export const App = () => {
         <Sidebar
           pgConnections={connections}
           onNodeSelect={(conn) => setActiveConnection(conn)}
+          setConnections={setConnections}
         ></Sidebar>
 
         <div className="sql-part">
