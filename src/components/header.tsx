@@ -1,11 +1,41 @@
 import "../styles/header.css";
+import { Connection } from "../type/connection.type";
+import { invoke } from "@tauri-apps/api/core";
 
 type HeaderProps = {
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
+  setResult: React.Dispatch<React.SetStateAction<any[] | string>>;
+  activeConnection: Connection | null;
+  code: string;
 };
 
-export const Header = ({ isVisible, setIsVisible }: HeaderProps) => {
+export const Header = ({
+  isVisible,
+  setIsVisible,
+  activeConnection,
+  code,
+  setResult,
+}: HeaderProps) => {
+  const handleExecute = async () => {
+    try {
+      if (activeConnection) {
+        const result: any = await invoke("execute_query", {
+          uuid: activeConnection.id,
+          sql: code,
+        });
+        if (result.data) {
+          setResult(result.data);
+        } else if (result.rows_affected) {
+          setResult(result.rows_affected);
+        }
+        console.log(result);
+      }
+    } catch (e) {
+      console.error(e);
+      setResult(e);
+    }
+  };
   return (
     <header className="header">
       <h3 className="header-logo">grpsm</h3>
@@ -19,7 +49,9 @@ export const Header = ({ isVisible, setIsVisible }: HeaderProps) => {
           </button>
         </li>
         <li className="list-item">
-          <button className="item-start">⏩</button>
+          <button className="item-start" onClick={handleExecute}>
+            ⏩
+          </button>
         </li>
       </ul>
     </header>

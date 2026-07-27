@@ -15,12 +15,19 @@ export const App = () => {
   const [activeConnection, setActiveConnection] = useState(null);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [isVisible, setIsVisible] = useState(false);
+  const [result, setResult] = useState<any[] | string>([]);
 
   const nodeRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="container">
-      <Header isVisible={isVisible} setIsVisible={setIsVisible}></Header>
+      <Header
+        isVisible={isVisible}
+        setIsVisible={setIsVisible}
+        code={code}
+        setResult={setResult}
+        activeConnection={activeConnection}
+      ></Header>
       {isVisible ? (
         <Draggable cancel="" nodeRef={nodeRef}>
           <div ref={nodeRef} className="drag-div" style={{}}>
@@ -38,7 +45,7 @@ export const App = () => {
 
         <div className="sql-part">
           <EditorComponent code={code} setCode={setCode}></EditorComponent>
-          <ResultTable data={[]}></ResultTable>
+          <ResultTable data={result}></ResultTable>
         </div>
       </div>
     </div>

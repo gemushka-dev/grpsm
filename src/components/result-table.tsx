@@ -1,6 +1,6 @@
 import "../styles/table.css";
 type ResultTableProps = {
-  data: Record<string, any>[];
+  data: Record<string, any>[] | string;
 };
 
 export const ResultTable = ({ data }: ResultTableProps) => {
@@ -8,6 +8,13 @@ export const ResultTable = ({ data }: ResultTableProps) => {
     return (
       <div>
         <span>Waiting for your SQL script</span>
+      </div>
+    );
+  }
+  if (typeof data == "string") {
+    return (
+      <div>
+        <span>{data}</span>
       </div>
     );
   }
