@@ -27,3 +27,10 @@
 .sql-part > :last-child {
   flex: 1;
 }
+.drag-div {
+  position: absolute;
+  top: 100px;
+  left: 200px;
+  z-index: 1000;
+  cursor: move;
+}
