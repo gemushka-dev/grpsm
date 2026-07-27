@@ -5,6 +5,7 @@ import { EditorComponent } from "./components/sql-editor";
 import { ResultTable } from "./components/result-table";
 import { type Connection } from "./type/connection.type";
 import { ConnectionModel } from "./components/connection";
+import { Result } from "./type/result.type";
 import Draggable from "react-draggable";
 import "./styles/base.css";
 import "./styles/main.css";
@@ -15,7 +16,7 @@ export const App = () => {
   const [activeConnection, setActiveConnection] = useState(null);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [isVisible, setIsVisible] = useState(false);
-  const [result, setResult] = useState<any[] | string>([]);
+  const [result, setResult] = useState<Result | string>("");
 
   const nodeRef = useRef<HTMLDivElement>(null);
 

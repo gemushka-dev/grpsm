@@ -1,11 +1,12 @@
 import "../styles/header.css";
 import { Connection } from "../type/connection.type";
 import { invoke } from "@tauri-apps/api/core";
+import { Result } from "../type/result.type";
 
 type HeaderProps = {
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
-  setResult: React.Dispatch<React.SetStateAction<any[] | string>>;
+  setResult: React.Dispatch<React.SetStateAction<Result | string>>;
   activeConnection: Connection | null;
   code: string;
 };
@@ -24,11 +25,7 @@ export const Header = ({
           uuid: activeConnection.id,
           sql: code,
         });
-        if (result.data) {
-          setResult(result.data);
-        } else if (result.rows_affected) {
-          setResult(result.rows_affected);
-        }
+        setResult(result);
         console.log(result);
       }
     } catch (e) {

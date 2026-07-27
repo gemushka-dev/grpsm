@@ -1,30 +1,30 @@
 import "../styles/table.css";
+import { Result } from "../type/result.type";
 type ResultTableProps = {
-  data: Record<string, any>[] | string;
+  data: Result | string;
 };
 
 export const ResultTable = ({ data }: ResultTableProps) => {
-  if (!data || data.length === 0) {
-    return (
-      <div className="result-msg">
-        <span>No data from your SQL query</span>
-      </div>
-    );
-  }
-  if (typeof data == "string" || !data[0]) {
+  if (typeof data == "string") {
     return (
       <div className="result-msg">
         <span>{data as string}</span>
       </div>
     );
   }
-  const headers = Object.keys(data[0]);
+  if (data.type === "mutation") {
+    return (
+      <div className="result-msg">
+        <span>{data.rows_affected}</span>
+      </div>
+    );
+  }
   return (
     <div className="result-div">
       <table className="result-table">
         <thead className="table-header">
           <tr className="header-tr">
-            {headers.map((header) => {
+            {data.columns.map((header) => {
               return (
                 <th key={header} className="header-th">
                   {header}
@@ -34,10 +34,10 @@ export const ResultTable = ({ data }: ResultTableProps) => {
           </tr>
         </thead>
         <tbody className="table-body">
-          {data.map((row, index) => {
+          {data.data.map((row, index) => {
             return (
               <tr key={row.id || index} className="body-tr">
-                {headers.map((header) => {
+                {data.columns.map((header) => {
                   return (
                     <td key={header} className="body-td">
                       {typeof row[header] == "object"
