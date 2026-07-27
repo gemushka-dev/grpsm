@@ -24,22 +24,31 @@ async fn connect_to_db(connection_string: String, state: tauri::State<'_, AppSta
 async fn execute_query(uuid: String, sql:String, state: tauri::State<'_, AppState>) -> Result<Value, String>{
     let read_connections = state.connections.read().await;
     let connection = read_connections.get(&uuid).ok_or_else(|| "No connection".to_string())?;
-
-    match sqlx::query(&sql).fetch_all(connection).await{
-        Ok(rows) => {
-            let res: Vec<Value> = rows.iter().map(|row| {
-                let mut map = serde_json::Map::new();
-                for col in row.columns(){
-                    let val: Option<String> = row.try_get(col.name()).ok();
-                    map.insert(col.name().to_string(), json!(val));
-                }
-                Value::Object(map)
-            }).collect();
-            Ok(json!({"type":"select", "data":res}))
+    let clean_sql = sql.trim().trim_end_matches(';');
+    let wrapped_sql = format!(
+        "SELECT coalesce(json_agg(row_to_json(t)), '[]'::json) FROM ({}) AS t",
+        clean_sql
+    );
+   
+    match sqlx::query(&wrapped_sql).fetch_one(connection).await {
+        Ok(row) => {
+            let json_val: Value = row.try_get(0).map_err(|e| e.to_string())?;
+            
+            Ok(json!({
+                "type": "select",
+                "data": json_val
+            }))
         },
         Err(_) => {
-            let execution = sqlx::query(&sql).execute(connection).await.map_err(|e| e.to_string())?;
-            Ok(json!({ "type": "mutation", "rows_affected": execution.rows_affected() }))
+            let execution = sqlx::query(&sql)
+                .execute(connection)
+                .await
+                .map_err(|e| e.to_string())?;
+
+            Ok(json!({
+                "type": "mutation",
+                "rows_affected": execution.rows_affected()
+            }))
         }
     }
 }
