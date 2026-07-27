@@ -1,9 +1,13 @@
-import { useRef, useState, type UIEvent, type KeyboardEvent } from "react";
+import { useRef, type UIEvent, type KeyboardEvent } from "react";
 import { SQL_KEYWORDS, SQL_TYPES, SQL_FUNCTIONS } from "../data/sql-keywords";
 import "../styles/editor.css";
 
-export const EditorComponent = () => {
-  const [code, setCode] = useState("");
+type EditorProps = {
+  code: string;
+  setCode: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export const EditorComponent = ({ code, setCode }: EditorProps) => {
   const divRef = useRef<HTMLDivElement>(null);
 
   const highLight = (text: string) => {

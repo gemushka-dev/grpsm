@@ -10,6 +10,8 @@ import "./styles/base.css";
 import "./styles/main.css";
 
 export const App = () => {
+  const [code, setCode] = useState("");
+
   const [activeConnection, setActiveConnection] = useState(null);
   const [connections, setConnections] = useState<Connection[]>([]);
   const [isVisible, setIsVisible] = useState(false);
@@ -35,7 +37,7 @@ export const App = () => {
         ></Sidebar>
 
         <div className="sql-part">
-          <EditorComponent></EditorComponent>
+          <EditorComponent code={code} setCode={setCode}></EditorComponent>
           <ResultTable data={[]}></ResultTable>
         </div>
       </div>
