@@ -26,17 +26,32 @@ async fn execute_query(uuid: String, sql:String, state: tauri::State<'_, AppStat
     let connection = read_connections.get(&uuid).ok_or_else(|| "No connection".to_string())?;
     let clean_sql = sql.trim().trim_end_matches(';');
     let wrapped_sql = format!(
-        "SELECT coalesce(json_agg(row_to_json(t)), '[]'::json) FROM ({}) AS t",
+        "WITH query_result AS ({})
+         SELECT 
+            coalesce(json_agg(row_to_json(query_result)), '[]'::json) AS data,
+            coalesce(
+                (
+                    SELECT json_agg(keys) 
+                    FROM (
+                        SELECT json_object_keys(row_to_json(first_row)) AS keys 
+                        FROM (SELECT * FROM query_result LIMIT 1) first_row
+                    ) k
+                ), 
+                '[]'::json
+            ) AS columns
+         FROM query_result",
         clean_sql
     );
    
     match sqlx::query(&wrapped_sql).fetch_one(connection).await {
         Ok(row) => {
-            let json_val: Value = row.try_get(0).map_err(|e| e.to_string())?;
-            
+            let data: Value = row.try_get("data").unwrap_or(json!([]));
+            let columns: Value = row.try_get("columns").unwrap_or(json!([]));
+
             Ok(json!({
                 "type": "select",
-                "data": json_val
+                "columns": columns,
+                "data": data
             }))
         },
         Err(_) => {
