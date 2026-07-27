@@ -11,10 +11,10 @@ export const ResultTable = ({ data }: ResultTableProps) => {
       </div>
     );
   }
-  if (typeof data == "string") {
+  if (typeof data == "string" || !data[0]) {
     return (
       <div>
-        <span>{data}</span>
+        <span>Rows affected {data as string}</span>
       </div>
     );
   }

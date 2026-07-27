@@ -33,7 +33,7 @@ export const Header = ({
       }
     } catch (e) {
       console.error(e);
-      setResult(e);
+      setResult(e as string);
     }
   };
   return (
