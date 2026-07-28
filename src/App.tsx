@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Header } from "./components/header";
 import { Sidebar } from "./components/sidebar";
 import { EditorComponent } from "./components/sql-editor";
@@ -10,6 +10,7 @@ import Draggable from "react-draggable";
 import "remixicon/fonts/remixicon.css";
 import "./styles/base.css";
 import "./styles/main.css";
+import { invoke } from "@tauri-apps/api/core";
 
 export const App = () => {
   const [code, setCode] = useState("");
@@ -20,6 +21,19 @@ export const App = () => {
   const [result, setResult] = useState<Result | string>("");
 
   const nodeRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const initConnections = async () => {
+      try {
+        const saved: Connection[] = await invoke("load_saved_connections");
+        setConnections(saved);
+      } catch (e) {
+        console.error("Ошибка при загрузке сохраненных подключений:", e);
+      }
+    };
+
+    initConnections();
+  }, []);
 
   return (
     <div className="container">

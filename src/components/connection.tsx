@@ -25,6 +25,15 @@ export const ConnectionModel = ({
     try {
       const uuid: string = await invoke("connect_to_db", {
         connectionString: connectionString,
+        pgConn: {
+          id: "",
+          name,
+          host,
+          port,
+          user,
+          password,
+          dbName: database,
+        },
       });
       const newConnection: Connection = {
         id: uuid,
