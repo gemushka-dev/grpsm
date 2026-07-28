@@ -1,21 +1,76 @@
 use std::collections::HashMap;
-use sqlx::{PgPool, Row, Column};
-use uuid::Uuid;
-use tokio::sync::RwLock;
+use std::env;
+use std::fs::{self, OpenOptions};
+use std::path::PathBuf;
+use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use sqlx::{PgPool, Row};
+use tokio::sync::RwLock;
+use uuid::Uuid;
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct PGConnection {
+    pub id: String,
+    pub name: String,
+    pub host: String,
+    pub port: i32,
+    pub user: String,
+    pub password: String,
+    #[serde(rename = "dbName")]
+    pub db_name: String,
+}
 
 pub struct AppState {
     pub connections: RwLock<HashMap<String, PgPool>>,
+    pub config_path: PathBuf
 }
 
 #[tauri::command]
-async fn connect_to_db(connection_string: String, state: tauri::State<'_, AppState>) -> Result<String, String>{
+async fn load_saved_connections(state: tauri::State<'_, AppState>) -> Result<Vec<PGConnection>, String>{
+    if !state.config_path.exists(){
+        return Ok(vec![]);
+    }
+    let content = fs::read_to_string(&state.config_path).map_err(|e| e.to_string())?;
+    if content.trim().is_empty() {
+        return Ok(vec![]);
+    }
+    let connections: Vec<PGConnection> = serde_json::from_str(&content).map_err(|e| e.to_string())?;
+
+    for conn in &connections{
+        let connection_string = format!(
+            "postgres://{}:{}@{}:{}/{}",
+            conn.user, conn.password, conn.host, conn.port, conn.db_name
+        );
+        if let Ok(pool) = PgPool::connect(&connection_string).await {
+            let mut conn_save = state.connections.write().await;
+            conn_save.insert(conn.id.clone(), pool);
+        } 
+    }
+
+    Ok(connections)
+}
+
+#[tauri::command]
+async fn connect_to_db(connection_string: String, pg_conn:PGConnection, state: tauri::State<'_, AppState>) -> Result<String, String>{
     let pool = PgPool::connect(&connection_string)
         .await
         .map_err(|e| e.to_string())?;
     let connection_id = Uuid::new_v4().to_string();
     let mut connections = state.connections.write().await;
     connections.insert(connection_id.clone(), pool);
+
+    let content = fs::read_to_string(&state.config_path).map_err(|e| e.to_string())?;
+    let mut saved_list: Vec<PGConnection> = if content.trim().is_empty() {
+        vec![]
+    } else {
+        serde_json::from_str(&content).unwrap_or_else(|_| vec![])
+    };
+    let mut new_conn = pg_conn;
+    new_conn.id = connection_id.clone();
+    saved_list.push(new_conn);
+
+    let json_data = serde_json::to_string_pretty(&saved_list).map_err(|e| e.to_string())?;
+    fs::write(&state.config_path, json_data).map_err(|e| e.to_string())?;
 
     Ok(connection_id)
 }
@@ -71,12 +126,17 @@ async fn execute_query(uuid: String, sql:String, state: tauri::State<'_, AppStat
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let user_profile = env::var("USERPROFILE").or_else(|_| env::var("HOME")).unwrap_or_else(|_| ".".to_string());
+    let config_path = PathBuf::from(user_profile).join("grpsm-connections-conf.json");
+    let options = OpenOptions::new().read(true).write(true).create(true).open(&config_path);
+
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .manage(AppState{
-            connections: RwLock::new(HashMap::new(),)
+            connections: RwLock::new(HashMap::new(),),
+            config_path,
         })
-        .invoke_handler(tauri::generate_handler![connect_to_db, execute_query])
+        .invoke_handler(tauri::generate_handler![connect_to_db, execute_query,load_saved_connections])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
