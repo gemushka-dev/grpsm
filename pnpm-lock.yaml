@@ -23,6 +23,9 @@ importers:
       react-draggable:
         specifier: ^4.7.0
         version: 4.7.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      remixicon:
+        specifier: ^4.9.1
+        version: 4.9.1
     devDependencies:
       '@tauri-apps/cli':
         specifier: ^2
@@ -686,6 +689,9 @@ packages:
     resolution: {integrity: sha512-HNe9WslTbXmFK8o8cmwgAeJFSBvt1bPdHCVKtaaV+WlAN36mpT4hcRpwbf3fY56ar2oIXzsBpOAiIRHAdY0OlQ==}
     engines: {node: '>=0.10.0'}
 
+  remixicon@4.9.1:
+    resolution: {integrity: sha512-36gLSoujkabnCFZFDyP17VNh9piuBA/rsXUb4auSJWLGsHVXtmxLj/EM5FjaEAGnk8oIAj1Azob/DZ2N+90lAQ==}
+
   rollup@4.62.2:
     resolution: {integrity: sha512-RFnrW4lhXA3s3eqHDZvN654g8OTjzRfqpIRJYczCGB6HzphckVAi/Qh4tbPUbRuDi7s1Llv8g/NspLkttY3gTA==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
@@ -1263,6 +1269,8 @@ snapshots:
   react-refresh@0.17.0: {}
 
   react@19.2.7: {}
+
+  remixicon@4.9.1: {}
 
   rollup@4.62.2:
     dependencies:

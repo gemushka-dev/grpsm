@@ -42,12 +42,12 @@ export const Header = ({
             className="item-connection"
             onClick={() => setIsVisible(!isVisible)}
           >
-            ➕
+            <i className="ri-add-large-line"></i>
           </button>
         </li>
         <li className="list-item">
           <button className="item-start" onClick={handleExecute}>
-            ⏩
+            <i className="ri-play-large-line"></i>
           </button>
         </li>
       </ul>

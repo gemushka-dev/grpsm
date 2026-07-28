@@ -14,7 +14,8 @@
     "@tauri-apps/plugin-opener": "^2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-draggable": "^4.7.0"
+    "react-draggable": "^4.7.0",
+    "remixicon": "^4.9.1"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2",
