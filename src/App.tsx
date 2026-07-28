@@ -7,6 +7,7 @@ import { type Connection } from "./type/connection.type";
 import { ConnectionModel } from "./components/connection";
 import { Result } from "./type/result.type";
 import Draggable from "react-draggable";
+import "remixicon/fonts/remixicon.css";
 import "./styles/base.css";
 import "./styles/main.css";
 
@@ -30,9 +31,12 @@ export const App = () => {
         activeConnection={activeConnection}
       ></Header>
       {isVisible ? (
-        <Draggable cancel="" nodeRef={nodeRef}>
+        <Draggable cancel=".move-input, .close, .btn-connect" nodeRef={nodeRef}>
           <div ref={nodeRef} className="drag-div" style={{}}>
-            <ConnectionModel setConnections={setConnections} />
+            <ConnectionModel
+              setConnections={setConnections}
+              setIsVisible={setIsVisible}
+            />
           </div>
         </Draggable>
       ) : null}

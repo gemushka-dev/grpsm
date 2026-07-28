@@ -73,3 +73,10 @@
 .btn-connect:hover {
   background-color: #1d4ed8;
 }
+.close {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 1.2rem;
+  cursor: pointer;
+}

@@ -5,9 +5,13 @@ import "../styles/connection.css";
 
 type ConnectionProps = {
   setConnections: React.Dispatch<React.SetStateAction<Connection[]>>;
+  setIsVisible: (visible: boolean) => void;
 };
 
-export const ConnectionModel = ({ setConnections }: ConnectionProps) => {
+export const ConnectionModel = ({
+  setConnections,
+  setIsVisible,
+}: ConnectionProps) => {
   const [name, setName] = useState("");
   const [port, setPort] = useState(5432);
   const [host, setHost] = useState("localhost");
@@ -38,6 +42,9 @@ export const ConnectionModel = ({ setConnections }: ConnectionProps) => {
 
   return (
     <div className="move">
+      <span className="close" onClick={() => setIsVisible(false)}>
+        <i className="ri-close-large-line"></i>
+      </span>
       <form onSubmit={(e) => e.preventDefault()}>
         <label htmlFor="name">Name</label>
         <input
