@@ -2,6 +2,7 @@ import "../styles/header.css";
 import { Connection } from "../type/connection.type";
 import { invoke } from "@tauri-apps/api/core";
 import { Result } from "../type/result.type";
+import { useCallback, useEffect } from "react";
 
 type HeaderProps = {
   isVisible: boolean;
@@ -18,7 +19,7 @@ export const Header = ({
   code,
   setResult,
 }: HeaderProps) => {
-  const handleExecute = async () => {
+  const handleExecute = useCallback(async () => {
     try {
       if (activeConnection) {
         const result: any = await invoke("execute_query", {
@@ -32,7 +33,20 @@ export const Header = ({
       console.error(e);
       setResult(e as string);
     }
-  };
+  }, [activeConnection, code, setResult]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "F5" || (e.ctrlKey && e.key === "Enter")) {
+        e.preventDefault();
+        handleExecute();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleExecute]);
   return (
     <header className="header">
       <h3 className="header-logo">grpsm</h3>
