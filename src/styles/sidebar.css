@@ -1,8 +1,8 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: 280px;
-  min-width: 280px;
+  width: 350px;
+  min-width: 350px;
   height: 100vh;
   border-right: 1px solid #cbd5e1;
   border-top: 1px solid #cbd5e1;
