@@ -5,7 +5,8 @@
   box-sizing: border-box;
 }
 .result-table {
-  width: 100%;
+  min-width: 100%;
+  width: max-content;
   table-layout: fixed;
   border-collapse: collapse;
 }
@@ -14,16 +15,19 @@
   border: 1px solid #ccc;
 }
 .header-th {
+  width: 150px;
+  min-width: 80px;
   position: sticky;
   top: 0;
   padding: 1rem;
   text-align: left;
   z-index: 2;
   background-color: white;
+  resize: horizontal;
+  overflow: auto;
 }
 .body-td {
   padding: 1rem;
-  word-break: break-all;
 }
 .result-msg {
   padding: 2rem;
