@@ -123,6 +123,30 @@ async fn execute_query(uuid: String, sql:String, state: tauri::State<'_, AppStat
     }
 }
 
+#[tauri::command]
+async fn get_db_info(uuid: String, state: tauri::State<'_, AppState>) -> Result<Value, String> {
+    let read_connections = state.connections.read().await;
+    let connection = read_connections.get(&uuid).ok_or_else(|| "No connection".to_string())?;
+    let sql = "
+        SELECT coalesce(json_agg(row_to_json(t)), '[]'::json) AS data
+        FROM (
+            SELECT 
+                table_name AS \"table_name\",
+                column_name AS \"column_name\",
+                data_type AS \"data_type\"
+            FROM information_schema.columns 
+            WHERE table_schema = 'public' 
+            ORDER BY table_name, ordinal_position
+        ) t
+    ";
+    match sqlx::query(&sql).fetch_one(connection).await{
+        Ok(row) => {
+            let data: Value = row.try_get("data").unwrap_or(json!([]));
+            Ok(data)
+        }
+        Err(e) => Err(e.to_string())
+    }
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -136,7 +160,7 @@ pub fn run() {
             connections: RwLock::new(HashMap::new(),),
             config_path,
         })
-        .invoke_handler(tauri::generate_handler![connect_to_db, execute_query,load_saved_connections])
+        .invoke_handler(tauri::generate_handler![connect_to_db, execute_query,load_saved_connections, get_db_info])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
