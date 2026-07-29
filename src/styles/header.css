@@ -8,6 +8,7 @@
   box-sizing: border-box;
   position: relative;
   z-index: 10;
+  flex-shrink: 0;
 }
 .header-logo {
   font-size: 1.3rem;

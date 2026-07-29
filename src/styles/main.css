@@ -26,6 +26,7 @@
 }
 .sql-part > :last-child {
   flex: 1;
+  overflow: auto;
 }
 .drag-div {
   position: absolute;
