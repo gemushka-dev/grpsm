@@ -77,90 +77,96 @@ export const Sidebar = ({
           const indexes = indexMap[conn.id];
           return (
             <div className="connection-wrapper">
-              <div
-                className={`connection-item ${isSelected ? "selected" : ""}`}
-                key={conn.id}
-                onClick={() => handleConnectClick(conn)}
-                onDoubleClick={() => handleDoubleClick(conn)}
-              >
-                <div className="connection-info">
-                  <div className="connection-avatar">PG</div>
-                  <div className="connection-details">
-                    <div className="connection-name">{conn.name}</div>
-                    <div className="connection-meta">
-                      {conn.host}:{conn.port} ·{" "}
-                      <span className="db-name"> {conn.dbName}</span>
+              <div className="tables-tree">
+                <details>
+                  <summary>
+                    <div
+                      className={`connection-item ${isSelected ? "selected" : ""}`}
+                      key={conn.id}
+                      onClick={() => handleConnectClick(conn)}
+                      onDoubleClick={() => handleDoubleClick(conn)}
+                    >
+                      <div className="connection-info">
+                        <div className="connection-avatar">PG</div>
+                        <div className="connection-details">
+                          <div className="connection-name">{conn.name}</div>
+                          <div className="connection-meta">
+                            {conn.host}:{conn.port} ·{" "}
+                            <span className="db-name"> {conn.dbName}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        className={`status-dot ${conn.isConnected ? "online" : "offline"}`}
+                      ></div>
                     </div>
-                  </div>
-                </div>
-                <div
-                  className={`status-dot ${conn.isConnected ? "online" : "offline"}`}
-                ></div>
-              </div>
-              {tables && (
-                <div className="tables-tree">
-                  <details>
-                    <summary>Schemas</summary>
+                  </summary>
 
+                  {tables && (
                     <details>
-                      <summary>Tables</summary>
+                      <summary>Schemas</summary>
 
-                      {Object.entries(tables).map(([tableName, cols]) => {
-                        const tableConstraints = constraints?.[tableName] || [];
-                        const tableIndexes = indexes?.[tableName] || [];
-                        return (
-                          <details key={tableName}>
-                            <summary>{tableName}</summary>
+                      <details>
+                        <summary>Tables</summary>
 
-                            <details>
-                              <summary>Columns</summary>
-                              <ul>
-                                {cols.map((col) => (
-                                  <li key={col.column_name}>
-                                    {col.column_name}{" "}
-                                    <small>({col.data_type})</small>
-                                  </li>
-                                ))}
-                              </ul>
-                            </details>
+                        {Object.entries(tables).map(([tableName, cols]) => {
+                          const tableConstraints =
+                            constraints?.[tableName] || [];
+                          const tableIndexes = indexes?.[tableName] || [];
+                          return (
+                            <details key={tableName}>
+                              <summary>{tableName}</summary>
 
-                            <details>
-                              <summary>Constraints</summary>
-                              {tableConstraints.length > 0 ? (
+                              <details>
+                                <summary>Columns</summary>
                                 <ul>
-                                  {tableConstraints.map((c, index) => (
-                                    <li key={c.constraint_name || index}>
-                                      {c.constraint_name}{" "}
-                                      <small>({c.constraint_type})</small>
+                                  {cols.map((col) => (
+                                    <li key={col.column_name}>
+                                      {col.column_name}{" "}
+                                      <small>({col.data_type})</small>
                                     </li>
                                   ))}
                                 </ul>
-                              ) : (
-                                <div>No constraints</div>
-                              )}
-                            </details>
+                              </details>
 
-                            <details>
-                              <summary>Indexes</summary>
-                              {tableIndexes.length > 0 ? (
-                                <ul>
-                                  {tableIndexes.map((ind, index) => (
-                                    <li key={ind.index_name || index}>
-                                      {ind.index_name}{" "}
-                                    </li>
-                                  ))}
-                                </ul>
-                              ) : (
-                                <div>No Indexes</div>
-                              )}
+                              <details>
+                                <summary>Constraints</summary>
+                                {tableConstraints.length > 0 ? (
+                                  <ul>
+                                    {tableConstraints.map((c, index) => (
+                                      <li key={c.constraint_name || index}>
+                                        {c.constraint_name}{" "}
+                                        <small>({c.constraint_type})</small>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                ) : (
+                                  <div>No constraints</div>
+                                )}
+                              </details>
+
+                              <details>
+                                <summary>Indexes</summary>
+                                {tableIndexes.length > 0 ? (
+                                  <ul>
+                                    {tableIndexes.map((ind, index) => (
+                                      <li key={ind.index_name || index}>
+                                        {ind.index_name}{" "}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                ) : (
+                                  <div>No Indexes</div>
+                                )}
+                              </details>
                             </details>
-                          </details>
-                        );
-                      })}
+                          );
+                        })}
+                      </details>
                     </details>
-                  </details>
-                </div>
-              )}
+                  )}
+                </details>
+              </div>
             </div>
           );
         })}
