@@ -148,6 +148,39 @@ async fn get_db_info(uuid: String, state: tauri::State<'_, AppState>) -> Result<
     }
 }
 
+#[tauri::command]
+async fn get_constraints(uuid: String, state: tauri::State<'_, AppState>) -> Result<Value, String> {
+    let read_connections = state.connections.read().await;
+    let connection = read_connections.get(&uuid).ok_or_else(|| "No connection".to_string())?;
+    let sql = "
+        SELECT coalesce(json_agg(row_to_json(t)), '[]'::json) AS data
+        FROM (
+            SELECT 
+                conrelid::regclass::text AS table_name,
+                conname AS constraint_name,
+                CASE contype
+                    WHEN 'p' THEN 'Primary Key'
+                    WHEN 'f' THEN 'Foreign Key'
+                    WHEN 'u' THEN 'Unique'
+                    WHEN 'c' THEN 'Check'
+                    WHEN 'n' THEN 'Null'
+                    ELSE contype::text
+                END AS constraint_type,
+                pg_get_constraintdef(oid) AS constraint_definition
+            FROM pg_constraint
+            WHERE connamespace = 'public'::regnamespace
+            ORDER BY conrelid, contype
+        ) t
+    ";
+    match sqlx::query(&sql).fetch_one(connection).await{
+        Ok(row) => {
+            let data: Value = row.try_get("data").unwrap_or(json!([]));
+            Ok(data)
+        }
+        Err(e) => Err(e.to_string())
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let user_profile = env::var("USERPROFILE").or_else(|_| env::var("HOME")).unwrap_or_else(|_| ".".to_string());
@@ -160,7 +193,7 @@ pub fn run() {
             connections: RwLock::new(HashMap::new(),),
             config_path,
         })
-        .invoke_handler(tauri::generate_handler![connect_to_db, execute_query,load_saved_connections, get_db_info])
+        .invoke_handler(tauri::generate_handler![connect_to_db, execute_query,load_saved_connections, get_db_info, get_constraints])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
