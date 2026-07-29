@@ -9,6 +9,7 @@
   position: relative;
   z-index: 10;
   flex-shrink: 0;
+  border-bottom: 1px solid #cbd5e1;
 }
 .header-logo {
   font-size: 1.3rem;

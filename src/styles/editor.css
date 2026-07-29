@@ -1,48 +1,49 @@
-.container{
-    position: relative;
-    width: 100%;
-    height: 300px;
+.container {
+  position: relative;
+  width: 100%;
+  height: 300px;
 }
-.container-text, .container-textarea{
-    position:absolute;
-    top:0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    font-family: monospace, "Courier New", Courier;
-    font-size: 1rem;
-    line-height: 1.5rem;
-    padding: 1rem;
-    border: 1px solid #ccc;
-    margin: 0;
-    box-sizing: border-box;
-    white-space: pre-wrap;
-    word-break: break-word;
-    overflow: auto;
+.container-text,
+.container-textarea {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-family: monospace, "Courier New", Courier;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  margin: 0;
+  box-sizing: border-box;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: auto;
 }
 
-.container-text{
-    background: #fff;
-    border-color: #ccc;
-    pointer-events: none;
+.container-text {
+  background: #fff;
+  border-color: #ccc;
+  pointer-events: none;
 }
-.container-textarea{
-    background: transparent;
-    color: transparent;
-    caret-color: black;
-    border-color: transparent;
-    resize: none;
-    outline: none;
+.container-textarea {
+  background: transparent;
+  color: transparent;
+  caret-color: black;
+  border-color: transparent;
+  resize: none;
+  outline: none;
 }
-.sql-span{
-    color:blue;
-    font-weight: bold;
+.sql-span {
+  color: blue;
+  font-weight: bold;
 }
-.sql-type-span{
-    color:yellowgreen;
-    font-weight: bold;
+.sql-type-span {
+  color: yellowgreen;
+  font-weight: bold;
 }
-.sql-function-span{
-    color:red;
-    font-weight: bold;
+.sql-function-span {
+  color: red;
+  font-weight: bold;
 }
