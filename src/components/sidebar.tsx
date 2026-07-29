@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Connection } from "../type/connection.type";
 import "../styles/sidebar.css";
 import { invoke } from "@tauri-apps/api/core";
+import { ColumnInfo, ConstraintInfo } from "../type/database.type";
 
 type SidebarProps = {
   onNodeSelect: (node: any) => void;
@@ -9,11 +10,13 @@ type SidebarProps = {
   setConnections: React.Dispatch<React.SetStateAction<Connection[]>>;
 };
 
-export type ColumnInfo = {
-  table_name: string;
-  column_name: string;
-  data_type: string;
-};
+function groupResult<T extends { table_name: string }>(arr: T[]) {
+  const r: Record<string, T[]> = {};
+  for (const item of arr) {
+    (r[item.table_name] ??= []).push(item);
+  }
+  return r;
+}
 
 export const Sidebar = ({
   onNodeSelect,
@@ -23,6 +26,9 @@ export const Sidebar = ({
   const [selectedId, setSelectedId] = useState("");
   const [tablesMap, setTablesMap] = useState<
     Record<string, Record<string, ColumnInfo[]>>
+  >({});
+  const [constraintMap, setConstraintMap] = useState<
+    Record<string, Record<string, ConstraintInfo[]>>
   >({});
   const handleConnectClick = (conn: Connection) => {
     setSelectedId(conn.id);
@@ -38,15 +44,15 @@ export const Sidebar = ({
   };
 
   const handleDoubleClick = async (conn: Connection) => {
-    const result = await invoke<ColumnInfo[]>("get_db_info", {
-      uuid: conn.id,
-    });
-    const r: Record<string, ColumnInfo[]> = {};
-    for (const item of result) {
-      (r[item.table_name] ??= []).push(item);
-    }
-    setTablesMap((prev) => ({ ...prev, [conn.id]: r }));
-    console.log(result);
+    const [result, constraintResult] = await Promise.all([
+      invoke<ColumnInfo[]>("get_db_info", { uuid: conn.id }),
+      invoke<ConstraintInfo[]>("get_constraints", { uuid: conn.id }),
+    ]);
+    setTablesMap((prev) => ({ ...prev, [conn.id]: groupResult(result) }));
+    setConstraintMap((prev) => ({
+      ...prev,
+      [conn.id]: groupResult(constraintResult),
+    }));
   };
   return (
     <aside className="sidebar">
@@ -59,6 +65,7 @@ export const Sidebar = ({
         {pgConnections.map((conn) => {
           const isSelected = selectedId === conn.id;
           const tables = tablesMap[conn.id];
+          const constraints = constraintMap[conn.id];
           return (
             <div className="connection-wrapper">
               <div
@@ -84,20 +91,20 @@ export const Sidebar = ({
               {tables && (
                 <div className="tables-tree">
                   <details>
-                    <summary>{conn.dbName}</summary>
+                    <summary>Schemas</summary>
 
                     <details>
-                      <summary>Schemas</summary>
+                      <summary>Tables</summary>
 
-                      <details>
-                        <summary>Tables</summary>
+                      {Object.entries(tables).map(([tableName, cols]) => {
+                        const tableConstraints = constraints?.[tableName] || [];
 
-                        <details>
-                          <summary>Columns</summary>
-                          {Object.entries(tables).map(([tableName, cols]) => (
-                            <details key={tableName}>
-                              <summary>{tableName}</summary>
+                        return (
+                          <details key={tableName}>
+                            <summary>{tableName}</summary>
 
+                            <details>
+                              <summary>Columns</summary>
                               <ul>
                                 {cols.map((col) => (
                                   <li key={col.column_name}>
@@ -107,9 +114,25 @@ export const Sidebar = ({
                                 ))}
                               </ul>
                             </details>
-                          ))}
-                        </details>
-                      </details>
+
+                            <details>
+                              <summary>Constraints</summary>
+                              {tableConstraints.length > 0 ? (
+                                <ul>
+                                  {tableConstraints.map((c, index) => (
+                                    <li key={c.constraint_name || index}>
+                                      {c.constraint_name}{" "}
+                                      <small>({c.constraint_type})</small>
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <div>No constraints</div>
+                              )}
+                            </details>
+                          </details>
+                        );
+                      })}
                     </details>
                   </details>
                 </div>
