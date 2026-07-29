@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Connection } from "../type/connection.type";
 import "../styles/sidebar.css";
 import { invoke } from "@tauri-apps/api/core";
-import { ColumnInfo, ConstraintInfo } from "../type/database.type";
+import { ColumnInfo, ConstraintInfo, IndexInfo } from "../type/database.type";
 
 type SidebarProps = {
   onNodeSelect: (node: any) => void;
@@ -30,6 +30,9 @@ export const Sidebar = ({
   const [constraintMap, setConstraintMap] = useState<
     Record<string, Record<string, ConstraintInfo[]>>
   >({});
+  const [indexMap, setIndexMap] = useState<
+    Record<string, Record<string, IndexInfo[]>>
+  >({});
   const handleConnectClick = (conn: Connection) => {
     setSelectedId(conn.id);
     if (onNodeSelect) {
@@ -44,14 +47,19 @@ export const Sidebar = ({
   };
 
   const handleDoubleClick = async (conn: Connection) => {
-    const [result, constraintResult] = await Promise.all([
+    const [result, constraintResult, indexResult] = await Promise.all([
       invoke<ColumnInfo[]>("get_db_info", { uuid: conn.id }),
       invoke<ConstraintInfo[]>("get_constraints", { uuid: conn.id }),
+      invoke<IndexInfo[]>("get_indexes", { uuid: conn.id }),
     ]);
     setTablesMap((prev) => ({ ...prev, [conn.id]: groupResult(result) }));
     setConstraintMap((prev) => ({
       ...prev,
       [conn.id]: groupResult(constraintResult),
+    }));
+    setIndexMap((prev) => ({
+      ...prev,
+      [conn.id]: groupResult(indexResult),
     }));
   };
   return (
@@ -66,6 +74,7 @@ export const Sidebar = ({
           const isSelected = selectedId === conn.id;
           const tables = tablesMap[conn.id];
           const constraints = constraintMap[conn.id];
+          const indexes = indexMap[conn.id];
           return (
             <div className="connection-wrapper">
               <div
@@ -98,7 +107,7 @@ export const Sidebar = ({
 
                       {Object.entries(tables).map(([tableName, cols]) => {
                         const tableConstraints = constraints?.[tableName] || [];
-
+                        const tableIndexes = indexes?.[tableName] || [];
                         return (
                           <details key={tableName}>
                             <summary>{tableName}</summary>
@@ -128,6 +137,21 @@ export const Sidebar = ({
                                 </ul>
                               ) : (
                                 <div>No constraints</div>
+                              )}
+                            </details>
+
+                            <details>
+                              <summary>Indexes</summary>
+                              {tableIndexes.length > 0 ? (
+                                <ul>
+                                  {tableIndexes.map((ind, index) => (
+                                    <li key={ind.index_name || index}>
+                                      {ind.index_name}{" "}
+                                    </li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <div>No Indexes</div>
                               )}
                             </details>
                           </details>

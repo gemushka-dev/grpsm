@@ -10,3 +10,9 @@ export type ConstraintInfo = {
   constraint_type: string;
   constraint_definition: string;
 };
+
+export type IndexInfo = {
+  table_name: string;
+  index_name: string;
+  index_def: string;
+};
