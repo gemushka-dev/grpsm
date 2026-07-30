@@ -1,10 +1,11 @@
+import { memo } from "react";
 import "../styles/table.css";
 import { Result } from "../type/result.type";
 type ResultTableProps = {
   data: Result | string;
 };
 
-export const ResultTable = ({ data }: ResultTableProps) => {
+export const ResultTable = memo(({ data }: ResultTableProps) => {
   if (typeof data == "string") {
     return (
       <div className="result-msg">
@@ -53,4 +54,4 @@ export const ResultTable = ({ data }: ResultTableProps) => {
       </table>
     </div>
   );
-};
+});
