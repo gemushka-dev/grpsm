@@ -17,7 +17,7 @@
 ## Preview
 
 <div align="center">
-  <img src="docs/images/grpsm-screen.png" alt="GRPSM App Preview" width="900px" />
+  <img src="docs/images/grpsm-screen.PNG" alt="GRPSM App Preview" width="900px" />
 </div>
 
 ---
