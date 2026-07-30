@@ -115,7 +115,9 @@ export const Sidebar = ({
                           const tableIndexes = indexes?.[tableName] || [];
                           return (
                             <details key={tableName}>
-                              <summary>{tableName}</summary>
+                              <summary className="table-name">
+                                {tableName}
+                              </summary>
 
                               <details>
                                 <summary>Columns</summary>

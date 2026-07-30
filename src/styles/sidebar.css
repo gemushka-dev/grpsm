@@ -1,8 +1,8 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  width: 350px;
-  min-width: 350px;
+  width: 400px;
+  min-width: 400px;
   height: 100vh;
   border-right: 1px solid #cbd5e1;
   border-top: 1px solid #cbd5e1;
@@ -131,4 +131,8 @@
 details > summary::marker {
   content: "";
   display: none;
+}
+.table-name {
+  font-size: 0.9rem;
+  color: #020202;
 }
