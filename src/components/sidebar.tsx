@@ -2,7 +2,12 @@ import { useState } from "react";
 import { Connection } from "../type/connection.type";
 import "../styles/sidebar.css";
 import { invoke } from "@tauri-apps/api/core";
-import { ColumnInfo, ConstraintInfo, IndexInfo } from "../type/database.type";
+import {
+  ColumnInfo,
+  ConstraintInfo,
+  IndexInfo,
+  ViewColumnInfo,
+} from "../type/database.type";
 
 type SidebarProps = {
   onNodeSelect: (node: any) => void;
@@ -33,6 +38,9 @@ export const Sidebar = ({
   const [indexMap, setIndexMap] = useState<
     Record<string, Record<string, IndexInfo[]>>
   >({});
+  const [viewMap, setViewMap] = useState<
+    Record<string, Record<string, ViewColumnInfo[]>>
+  >({});
   const handleConnectClick = (conn: Connection) => {
     setSelectedId(conn.id);
     if (onNodeSelect) {
@@ -47,11 +55,13 @@ export const Sidebar = ({
   };
 
   const handleDoubleClick = async (conn: Connection) => {
-    const [result, constraintResult, indexResult] = await Promise.all([
-      invoke<ColumnInfo[]>("get_db_info", { uuid: conn.id }),
-      invoke<ConstraintInfo[]>("get_constraints", { uuid: conn.id }),
-      invoke<IndexInfo[]>("get_indexes", { uuid: conn.id }),
-    ]);
+    const [result, constraintResult, indexResult, viewResult] =
+      await Promise.all([
+        invoke<ColumnInfo[]>("get_db_info", { uuid: conn.id }),
+        invoke<ConstraintInfo[]>("get_constraints", { uuid: conn.id }),
+        invoke<IndexInfo[]>("get_indexes", { uuid: conn.id }),
+        invoke<ViewColumnInfo[]>("get_views", { uuid: conn.id }),
+      ]);
     setTablesMap((prev) => ({ ...prev, [conn.id]: groupResult(result) }));
     setConstraintMap((prev) => ({
       ...prev,
@@ -60,6 +70,10 @@ export const Sidebar = ({
     setIndexMap((prev) => ({
       ...prev,
       [conn.id]: groupResult(indexResult),
+    }));
+    setViewMap((prev) => ({
+      ...prev,
+      [conn.id]: groupResult(viewResult),
     }));
   };
   return (
@@ -75,6 +89,7 @@ export const Sidebar = ({
           const tables = tablesMap[conn.id];
           const constraints = constraintMap[conn.id];
           const indexes = indexMap[conn.id];
+          const views = viewMap[conn.id];
           return (
             <div className="connection-wrapper">
               <div className="tables-tree">
@@ -160,6 +175,30 @@ export const Sidebar = ({
                                 ) : (
                                   <div>No Indexes</div>
                                 )}
+                              </details>
+                            </details>
+                          );
+                        })}
+                      </details>
+
+                      <details>
+                        <summary>Views</summary>
+
+                        {Object.entries(views).map(([viewName, cols]) => {
+                          return (
+                            <details>
+                              <summary>{viewName}</summary>
+
+                              <details>
+                                <summary>Columns</summary>
+                                <ul>
+                                  {cols.map((col) => (
+                                    <li key={col.column_name}>
+                                      {col.column_name}{" "}
+                                      <small>({col.data_type})</small>
+                                    </li>
+                                  ))}
+                                </ul>
                               </details>
                             </details>
                           );

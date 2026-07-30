@@ -16,3 +16,9 @@ export type IndexInfo = {
   index_name: string;
   index_def: string;
 };
+
+export type ViewColumnInfo = {
+  table_name: string;
+  column_name: string;
+  data_type: string;
+};
