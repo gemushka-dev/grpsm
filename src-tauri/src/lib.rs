@@ -206,6 +206,37 @@ async fn get_indexes(uuid: String, state: tauri::State<'_, AppState>) -> Result<
     }
 }
 
+#[tauri::command]
+async fn get_views(uuid:String, state:tauri::State<'_, AppState>) -> Result<Value, String>{
+    let read_connections = state.connections.read().await;
+    let connection = read_connections.get(&uuid).ok_or_else(|| "No connection".to_string())?;
+    let sql = "
+        WITH query_result AS (
+            SELECT 
+                table_name,
+                column_name,
+                data_type,
+                ordinal_position
+            FROM information_schema.columns
+            WHERE table_schema = 'public'
+            AND table_name IN (SELECT viewname FROM pg_views WHERE schemaname = 'public')
+        )
+        SELECT coalesce(json_agg(row_to_json(q)), '[]'::json) AS data
+        FROM (
+            SELECT table_name, column_name, data_type 
+            FROM query_result 
+            ORDER BY table_name, ordinal_position
+        ) q
+    ";
+    match sqlx::query(&sql).fetch_one(connection).await{
+        Ok(row) => {
+            let data: Value = row.try_get("data").unwrap_or(json!([]));
+            Ok(data)
+        }
+        Err(e) => Err(e.to_string())
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let user_profile = env::var("USERPROFILE").or_else(|_| env::var("HOME")).unwrap_or_else(|_| ".".to_string());
@@ -219,7 +250,7 @@ pub fn run() {
             config_path,
         })
         .invoke_handler(tauri::generate_handler![
-            connect_to_db, execute_query,load_saved_connections, get_db_info, get_constraints, get_indexes
+            connect_to_db, execute_query,load_saved_connections, get_db_info, get_constraints, get_indexes,get_views
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
