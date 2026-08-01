@@ -18,7 +18,6 @@ pub struct PGConnection {
     pub host: String,
     pub port: i32,
     pub user: String,
-    #[serde(skip_serializing)]
     pub password: String,
     #[serde(rename = "dbName")]
     pub db_name: String,
@@ -29,12 +28,12 @@ pub struct AppState {
     pub config_path: PathBuf
 }
 
-fn save_password(conn_id: String, password: String) -> Result<(), String>{
+fn save_password(conn_id: &str, password: &String) -> Result<(), String>{
     let entry = Entry::new(KEYRING_SERVICE, conn_id).map_err(|e| e.to_string())?;
     entry.set_password(password).map_err(|e| e.to_string())
 }
 
-fn get_password(conn_id: String) -> Result<String, String>{
+fn get_password(conn_id: &str) -> Result<String, String>{
     let entry = Entry::new(KEYRING_SERVICE, conn_id).map_err(|e| e.to_string())?;
     entry.get_password().map_err(|e| e.to_string())
 }
@@ -51,14 +50,17 @@ async fn load_saved_connections(state: tauri::State<'_, AppState>) -> Result<Vec
     let connections: Vec<PGConnection> = serde_json::from_str(&content).map_err(|e| e.to_string())?;
 
     for conn in &connections{
-        let connection_string = format!(
-            "postgres://{}:{}@{}:{}/{}",
-            conn.user, conn.password, conn.host, conn.port, conn.db_name
-        );
-        if let Ok(pool) = PgPool::connect(&connection_string).await {
-            let mut conn_save = state.connections.write().await;
-            conn_save.insert(conn.id.clone(), pool);
-        } 
+        if let Ok(saved_password) = get_password(&conn.id){
+            let connection_string = format!(
+                "postgres://{}:{}@{}:{}/{}",
+                conn.user, saved_password, conn.host, conn.port, conn.db_name
+            );
+            if let Ok(pool) = PgPool::connect(&connection_string).await {
+                let mut conn_save = state.connections.write().await;
+                conn_save.insert(conn.id.clone(), pool);
+            } 
+        }   
+        
     }
 
     Ok(connections)
@@ -70,6 +72,8 @@ async fn connect_to_db(connection_string: String, pg_conn:PGConnection, state: t
         .await
         .map_err(|e| e.to_string())?;
     let connection_id = Uuid::new_v4().to_string();
+
+    save_password(&connection_id, &pg_conn.password)?;
     let mut connections = state.connections.write().await;
     connections.insert(connection_id.clone(), pool);
 
@@ -81,6 +85,7 @@ async fn connect_to_db(connection_string: String, pg_conn:PGConnection, state: t
     };
     let mut new_conn = pg_conn;
     new_conn.id = connection_id.clone();
+    new_conn.password = String::new();
     saved_list.push(new_conn);
 
     let json_data = serde_json::to_string_pretty(&saved_list).map_err(|e| e.to_string())?;
