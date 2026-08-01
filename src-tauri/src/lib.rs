@@ -1,12 +1,12 @@
 use std::collections::HashMap;
-use std::env;
-use std::fs::{self, OpenOptions};
+use std::fs;
 use std::path::PathBuf;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 use sqlx::{PgPool, Row};
 use tokio::sync::RwLock;
 use uuid::Uuid;
+use tauri::Manager;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PGConnection {
@@ -239,15 +239,24 @@ async fn get_views(uuid:String, state:tauri::State<'_, AppState>) -> Result<Valu
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let user_profile = env::var("USERPROFILE").or_else(|_| env::var("HOME")).unwrap_or_else(|_| ".".to_string());
-    let config_path = PathBuf::from(user_profile).join("grpsm-connections-conf.json");
-    let options = OpenOptions::new().read(true).write(true).create(true).open(&config_path);
-
     tauri::Builder::default()
-        .plugin(tauri_plugin_opener::init())
-        .manage(AppState{
-            connections: RwLock::new(HashMap::new(),),
-            config_path,
+        .plugin(tauri_plugin_opener::init()).
+        setup(|app| {
+            let mut config_dir = app.path().app_config_dir().expect("Failed to get app config dir");
+            if !config_dir.exists() {
+                fs::create_dir_all(&config_dir).expect("Failed to create config directory");
+            }
+            let config_path = config_dir.join("grpsm-connections.json");
+            if !config_path.exists(){
+                let _ = fs::write(&config_path, "[]");
+            }
+
+            app.manage(AppState{
+                connections: RwLock::new(HashMap::new(),),
+                config_path,
+            });
+
+            Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             connect_to_db, execute_query,load_saved_connections, get_db_info, get_constraints, get_indexes,get_views
