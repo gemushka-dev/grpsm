@@ -31,3 +31,4 @@ sqlx = { version = "0.8", features = [
     "chrono",
     "uuid",
 ] }
+keyring = "4.1.6"

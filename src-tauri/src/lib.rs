@@ -7,6 +7,9 @@ use sqlx::{PgPool, Row};
 use tokio::sync::RwLock;
 use uuid::Uuid;
 use tauri::Manager;
+use keyring::Entry;
+
+const KEYRING_SERVICE: &str = "grpsm_db_passwords";
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PGConnection {
@@ -15,6 +18,7 @@ pub struct PGConnection {
     pub host: String,
     pub port: i32,
     pub user: String,
+    #[serde(skip_serializing)]
     pub password: String,
     #[serde(rename = "dbName")]
     pub db_name: String,
@@ -23,6 +27,16 @@ pub struct PGConnection {
 pub struct AppState {
     pub connections: RwLock<HashMap<String, PgPool>>,
     pub config_path: PathBuf
+}
+
+fn save_password(conn_id: String, password: String) -> Result<(), String>{
+    let entry = Entry::new(KEYRING_SERVICE, conn_id).map_err(|e| e.to_string())?;
+    entry.set_password(password).map_err(|e| e.to_string())
+}
+
+fn get_password(conn_id: String) -> Result<String, String>{
+    let entry = Entry::new(KEYRING_SERVICE, conn_id).map_err(|e| e.to_string())?;
+    entry.get_password().map_err(|e| e.to_string())
 }
 
 #[tauri::command]
