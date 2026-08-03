@@ -10,7 +10,7 @@
 
 <br />
 
-[![Download Windows Installer](https://img.shields.io/badge/Download_Installer-.msi-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/gemushka-dev/grpsm/releases/download/v1.1.0/GRPSM.1.1.0.x64.msi)
+[![Download Windows Installer](https://img.shields.io/badge/Download_Installer-.msi-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/gemushka-dev/grpsm/releases/download/v1.2.2/GRPSM.1.2.2.x64.msi)
 
 ---
 
