@@ -23,9 +23,22 @@ pub struct PGConnection {
     pub db_name: String,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]
+#[serde(rename_all = "lowercase")]
+pub enum Theme{
+    Dark,
+    Light
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct AppConfig{
+    pub theme: Theme
+}
+
 pub struct AppState {
     pub connections: RwLock<HashMap<String, PgPool>>,
-    pub config_path: PathBuf
+    pub config_path: PathBuf,
+    pub config_ui_path: PathBuf
 }
 
 fn save_password(conn_id: &str, password: &String) -> Result<(), String>{
@@ -266,13 +279,23 @@ pub fn run() {
                 fs::create_dir_all(&config_dir).expect("Failed to create config directory");
             }
             let config_path = config_dir.join("grpsm-connections.json");
+            let config_ui_path = config_dir.join("grpsm-config.json");
             if !config_path.exists(){
                 let _ = fs::write(&config_path, "[]");
+            }
+            if !config_ui_path.exists(){
+                let default_config = AppConfig {
+                    theme: Theme::Light
+                };
+                if let Ok(json) = serde_json::to_string_pretty(&default_config) {
+                    let _ = fs::write(&config_ui_path, json);
+                }
             }
 
             app.manage(AppState{
                 connections: RwLock::new(HashMap::new(),),
                 config_path,
+                config_ui_path
             });
 
             Ok(())
