@@ -57,6 +57,9 @@ main {
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar-thumb) var(--bg-main);
 }
+.main-part {
+  background: var(--bg-main);
+}
 .sidebar {
   background: var(--bg-surface);
   color: var(--text-main);
