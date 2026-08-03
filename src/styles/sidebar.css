@@ -4,8 +4,6 @@
   width: 400px;
   min-width: 400px;
   height: 100vh;
-  border-right: 1px solid #cbd5e1;
-  border-top: 1px solid #cbd5e1;
 }
 .sidebar-header {
   display: flex;
@@ -13,18 +11,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  border-bottom: 1px solid #e2e8f0;
 }
 .sidebar-title {
   font-size: 0.9rem;
   text-transform: uppercase;
-  color: #64748b;
   font-weight: 600;
 }
 .sidebar-count {
   font-size: 0.8rem;
-  background: #e2e8f0;
-  color: #475569;
   padding: 0.125rem 0.5rem;
   border-radius: 0.6rem;
   font-weight: 500;
@@ -47,13 +41,6 @@
   border-radius: 0.4rem;
   transition: background-color 0.4s ease;
 }
-.connection-item:hover {
-  background-color: #f1f5f9;
-}
-
-.connection-item.selected {
-  background-color: #cbd5e1;
-}
 .connection-info {
   display: flex;
   align-items: center;
@@ -67,7 +54,6 @@
   height: 2rem;
   border-radius: 0.3rem;
   font-weight: 600;
-  color: #ffffff;
   background-color: #336791;
 }
 .connection-details {
@@ -102,7 +88,6 @@
   background-color: #94a3b8;
 }
 .tables-tree details {
-  border-left: 1px solid #e2e8f0;
   margin-left: 0.5rem;
   padding-left: 0.4rem;
 }

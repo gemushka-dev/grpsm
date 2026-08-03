@@ -14,7 +14,6 @@
   font-size: 1rem;
   line-height: 1.5rem;
   padding: 1rem;
-  border: 1px solid #ccc;
   margin: 0;
   box-sizing: border-box;
   white-space: pre-wrap;
@@ -23,8 +22,6 @@
 }
 
 .container-text {
-  background: #fff;
-  border-color: #ccc;
   pointer-events: none;
 }
 .container-textarea {
