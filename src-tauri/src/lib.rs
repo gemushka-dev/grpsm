@@ -269,12 +269,36 @@ async fn get_views(uuid:String, state:tauri::State<'_, AppState>) -> Result<Valu
     }
 }
 
+#[tauri::command]
+async fn get_config(state: tauri::State<'_, AppState>) -> Result<AppConfig, String>{
+    if !state.config_ui_path.exists(){
+        return Ok(AppConfig {
+            theme: Theme::Light
+        })
+    }
+    let content = fs::read_to_string(&state.config_ui_path).map_err(|e| e.to_string())?;
+    if content.trim().is_empty() {
+        return Ok(AppConfig {
+            theme: Theme::Light
+        })
+    }
+    let config = serde_json::from_str(&content).map_err(|e| e.to_string())?;
+    Ok(config)
+}
+
+#[tauri::command]
+async fn save_config(config: AppConfig, state: tauri::State<'_, AppState>) -> Result<(), String> {
+    let json_data = serde_json::to_string_pretty(&config).map_err(|e| e.to_string())?;
+    fs::write(&state.config_ui_path, json_data).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init()).
         setup(|app| {
-            let mut config_dir = app.path().app_config_dir().expect("Failed to get app config dir");
+            let config_dir = app.path().app_config_dir().expect("Failed to get app config dir");
             if !config_dir.exists() {
                 fs::create_dir_all(&config_dir).expect("Failed to create config directory");
             }
@@ -301,8 +325,8 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            connect_to_db, execute_query,load_saved_connections, get_db_info, get_constraints, get_indexes,get_views
-        ])
+            connect_to_db, execute_query,load_saved_connections, get_db_info, get_constraints, get_indexes,get_views,get_config, save_config
+            ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
