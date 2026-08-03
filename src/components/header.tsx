@@ -4,7 +4,6 @@ import { invoke } from "@tauri-apps/api/core";
 import { Result } from "../type/result.type";
 import { useCallback, useEffect } from "react";
 import { AppConfig } from "../type/config.type";
-import { setTheme } from "@tauri-apps/api/app";
 
 type HeaderProps = {
   isVisible: boolean;
@@ -30,7 +29,7 @@ export const Header = ({
       const newConfig = {
         theme: config.theme === "light" ? "dark" : "light",
       };
-      const result = await invoke("save_config", {
+      await invoke("save_config", {
         config: newConfig,
       });
       setConfig(newConfig as AppConfig);
