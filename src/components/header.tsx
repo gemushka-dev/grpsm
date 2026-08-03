@@ -3,6 +3,8 @@ import { Connection } from "../type/connection.type";
 import { invoke } from "@tauri-apps/api/core";
 import { Result } from "../type/result.type";
 import { useCallback, useEffect } from "react";
+import { AppConfig } from "../type/config.type";
+import { setTheme } from "@tauri-apps/api/app";
 
 type HeaderProps = {
   isVisible: boolean;
@@ -10,6 +12,8 @@ type HeaderProps = {
   setResult: React.Dispatch<React.SetStateAction<Result | string>>;
   activeConnection: Connection | null;
   code: string;
+  config: AppConfig;
+  setConfig: React.Dispatch<React.SetStateAction<AppConfig>>;
 };
 
 export const Header = ({
@@ -18,7 +22,23 @@ export const Header = ({
   activeConnection,
   code,
   setResult,
+  config,
+  setConfig,
 }: HeaderProps) => {
+  const handleToggleTheme = useCallback(async () => {
+    try {
+      const newConfig = {
+        theme: config.theme === "light" ? "dark" : "light",
+      };
+      const result = await invoke("save_config", {
+        config: newConfig,
+      });
+      setConfig(newConfig as AppConfig);
+    } catch (e) {
+      console.error(e);
+    }
+  }, [config, setConfig]);
+
   const handleExecute = useCallback(async () => {
     try {
       if (activeConnection) {
@@ -62,6 +82,15 @@ export const Header = ({
         <li className="list-item">
           <button className="item-start" onClick={handleExecute}>
             <i className="ri-play-large-line"></i>
+          </button>
+        </li>
+        <li className="list-item">
+          <button className="item-theme" onClick={handleToggleTheme}>
+            {config.theme === "dark" ? (
+              <i className="ri-moon-line"></i>
+            ) : (
+              <i className="ri-sun-line"></i>
+            )}
           </button>
         </li>
       </ul>
