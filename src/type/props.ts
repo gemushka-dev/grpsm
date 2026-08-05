@@ -45,3 +45,9 @@ export interface ViewNodeProps {
 export interface ViewTreeProps {
   views: Record<string, ViewColumnInfo[]>;
 }
+
+export interface ConnectionGroupProps {
+  connection: Connection;
+  selectedId: string;
+  onSelect?: () => void;
+}
