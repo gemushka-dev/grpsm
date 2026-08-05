@@ -7,7 +7,13 @@ export const ViewTree = (props: ViewTreeProps) => {
     <details>
       <summary>Views</summary>
       {Object.entries(views).map(([viewName, cols]) => {
-        return <ViewNode viewName={viewName} columns={cols}></ViewNode>;
+        return (
+          <ViewNode
+            key={viewName}
+            viewName={viewName}
+            columns={cols}
+          ></ViewNode>
+        );
       })}
     </details>
   );

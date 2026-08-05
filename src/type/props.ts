@@ -51,3 +51,9 @@ export interface ConnectionGroupProps {
   selectedId: string;
   onSelect?: () => void;
 }
+
+export interface SidebarProps {
+  onNodeSelect: (node: any) => void;
+  pgConnections: Connection[];
+  setConnections: React.Dispatch<React.SetStateAction<Connection[]>>;
+}

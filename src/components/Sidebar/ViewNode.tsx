@@ -11,7 +11,7 @@ export const ViewNode = (props: ViewNodeProps) => {
     };
   });
   return (
-    <details>
+    <details key={viewName}>
       <summary>{viewName}</summary>
 
       <MetaDataSection

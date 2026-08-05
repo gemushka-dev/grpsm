@@ -12,6 +12,7 @@ export const TableTree = (props: TableTreeProps) => {
         const tableIndexes = indexes?.[tableName] || [];
         return (
           <TableNode
+            key={tableName}
             tableName={tableName}
             columns={cols}
             constraints={tableConstraints}
