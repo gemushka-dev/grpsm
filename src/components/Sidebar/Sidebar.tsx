@@ -1,13 +1,14 @@
 import { memo, useState } from "react";
-import { Connection } from "../type/connection.type";
-import "../styles/sidebar.css";
+import { Connection } from "../../type/connection.type";
+import "../../styles/sidebar.css";
 import { invoke } from "@tauri-apps/api/core";
 import {
   ColumnInfo,
   ConstraintInfo,
   IndexInfo,
   ViewColumnInfo,
-} from "../type/database.type";
+} from "../../type/database.type";
+import { ConnectionItem } from "./ConnectionItem";
 
 type SidebarProps = {
   onNodeSelect: (node: any) => void;
@@ -88,30 +89,16 @@ export const Sidebar = memo(
             const indexes = indexMap[conn.id];
             const views = viewMap[conn.id];
             return (
-              <div className="connection-wrapper">
+              <div className="connection-wrapper" key={conn.id}>
                 <div className="tables-tree">
                   <details>
                     <summary>
-                      <div
-                        className={`connection-item ${isSelected ? "selected" : ""}`}
-                        key={conn.id}
-                        onClick={() => handleConnectClick(conn)}
-                        onDoubleClick={() => handleDoubleClick(conn)}
-                      >
-                        <div className="connection-info">
-                          <div className="connection-avatar">PG</div>
-                          <div className="connection-details">
-                            <div className="connection-name">{conn.name}</div>
-                            <div className="connection-meta">
-                              {conn.host}:{conn.port} ·{" "}
-                              <span className="db-name"> {conn.dbName}</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div
-                          className={`status-dot ${conn.isConnected ? "online" : "offline"}`}
-                        ></div>
-                      </div>
+                      <ConnectionItem
+                        className={isSelected ? "selected" : ""}
+                        connection={conn}
+                        onSelect={() => handleConnectClick(conn)}
+                        onDblClick={() => handleDoubleClick(conn)}
+                      ></ConnectionItem>
                     </summary>
 
                     {tables && (
