@@ -25,3 +25,9 @@ export interface TableNodeProps {
   constraints: ConstraintInfo[];
   indexes: IndexInfo[];
 }
+
+export interface TableTreeProps {
+  tables: Record<string, ColumnInfo[]>;
+  constraints: Record<string, ConstraintInfo[]>;
+  indexes: Record<string, IndexInfo[]>;
+}
