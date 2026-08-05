@@ -1,5 +1,10 @@
 import { Connection } from "./connection.type";
-import { ColumnInfo, ConstraintInfo, IndexInfo } from "./database.type";
+import {
+  ColumnInfo,
+  ConstraintInfo,
+  IndexInfo,
+  ViewColumnInfo,
+} from "./database.type";
 import { MetadataItem } from "./metadata";
 
 export interface BaseProps {
@@ -30,4 +35,9 @@ export interface TableTreeProps {
   tables: Record<string, ColumnInfo[]>;
   constraints: Record<string, ConstraintInfo[]>;
   indexes: Record<string, IndexInfo[]>;
+}
+
+export interface ViewNodeProps {
+  viewName: string;
+  columns: ViewColumnInfo[];
 }
