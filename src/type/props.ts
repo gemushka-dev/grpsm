@@ -41,3 +41,7 @@ export interface ViewNodeProps {
   viewName: string;
   columns: ViewColumnInfo[];
 }
+
+export interface ViewTreeProps {
+  views: Record<string, ViewColumnInfo[]>;
+}
