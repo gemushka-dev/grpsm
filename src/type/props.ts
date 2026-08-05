@@ -1,4 +1,5 @@
 import { Connection } from "./connection.type";
+import { ColumnInfo, ConstraintInfo, IndexInfo } from "./database.type";
 import { MetadataItem } from "./metadata";
 
 export interface BaseProps {
@@ -16,4 +17,11 @@ export interface MetaDataSectionProps {
   title: string;
   items: MetadataItem[];
   emptyText?: string;
+}
+
+export interface TableNodeProps {
+  tableName: string;
+  columns: ColumnInfo[];
+  constraints: ConstraintInfo[];
+  indexes: IndexInfo[];
 }
