@@ -7,6 +7,7 @@ import {
   ViewColumnInfo,
 } from "./database.type";
 import { MetadataItem } from "./metadata";
+import { ActionItem } from "./header.action";
 
 export interface BaseProps {
   className?: string;
@@ -61,4 +62,8 @@ export interface SidebarProps {
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   text: React.ReactNode;
+}
+
+export interface HeaderActionProps extends BaseProps {
+  items: ActionItem[];
 }
