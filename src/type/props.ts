@@ -62,9 +62,7 @@ export interface SidebarProps {
   setConnections: React.Dispatch<React.SetStateAction<Connection[]>>;
 }
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  text: React.ReactNode;
-}
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
 export interface HeaderActionProps extends BaseProps {
   items: ActionItem[];

@@ -8,11 +8,9 @@ export const HeaderAction = (props: HeaderActionProps) => {
     <ul className={className}>
       {items.map((item) => (
         <li key={item.id} className="list-item">
-          <Button
-            text={<i className={item.iconClass}></i>}
-            className={item.className}
-            onClick={item.onClick}
-          ></Button>
+          <Button className={item.className} onClick={item.onClick}>
+            <i className={item.iconClass}></i>
+          </Button>
         </li>
       ))}
     </ul>
