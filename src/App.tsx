@@ -4,7 +4,7 @@ import { Sidebar } from "./components/Sidebar/Sidebar";
 import { EditorComponent } from "./components/sql-editor";
 import { ResultTable } from "./components/result-table";
 import { type Connection } from "./type/connection.type";
-import { ConnectionModel } from "./components/connection";
+import { ConnectionModal } from "./components/Connection/ConnectionModal";
 import { Result } from "./type/result.type";
 import Draggable from "react-draggable";
 import "remixicon/fonts/remixicon.css";
@@ -74,7 +74,7 @@ export const App = () => {
       {isVisible ? (
         <Draggable cancel=".move-input, .close, .btn-connect" nodeRef={nodeRef}>
           <div ref={nodeRef} className="drag-div" style={{}}>
-            <ConnectionModel
+            <ConnectionModal
               setConnections={setConnections}
               setIsVisible={setIsVisible}
             />
