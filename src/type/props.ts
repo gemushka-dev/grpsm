@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes } from "react";
+import { ButtonHTMLAttributes, InputHTMLAttributes } from "react";
 import { Connection } from "./connection.type";
 import {
   ColumnInfo,
@@ -77,3 +77,5 @@ export interface HeaderProps {
   config: AppConfig;
   setConfig: React.Dispatch<React.SetStateAction<AppConfig>>;
 }
+
+export interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {}
