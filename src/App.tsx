@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Header } from "./components/Header/header";
+import { Header } from "./components/Header/Header";
 import { Sidebar } from "./components/Sidebar/Sidebar";
 import { EditorComponent } from "./components/sql-editor";
 import { ResultTable } from "./components/result-table";

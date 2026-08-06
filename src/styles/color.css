@@ -162,3 +162,6 @@ main {
 .btn-connect:hover {
   background-color: var(--accent-hover);
 }
+.result-msg {
+  color: var(--text-main);
+}
