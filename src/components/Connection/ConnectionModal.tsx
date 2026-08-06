@@ -1,5 +1,5 @@
 import { ConnectionModalProps } from "../../type/props";
-import "../styles/connection.css";
+import "../../styles/connection.css";
 import { ConnectionForm } from "./ConnectionForm";
 
 export const ConnectionModal = (props: ConnectionModalProps) => {
