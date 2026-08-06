@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Header } from "./components/header";
-import { Sidebar } from "./components/Sidebar/sidebar";
+import { Header } from "./components/Header/header";
+import { Sidebar } from "./components/Sidebar/Sidebar";
 import { EditorComponent } from "./components/sql-editor";
 import { ResultTable } from "./components/result-table";
 import { type Connection } from "./type/connection.type";

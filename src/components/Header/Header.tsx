@@ -1,9 +1,11 @@
-import "../styles/header.css";
-import { Connection } from "../type/connection.type";
+import "../../styles/header.css";
+import { Connection } from "../../type/connection.type";
 import { invoke } from "@tauri-apps/api/core";
-import { Result } from "../type/result.type";
+import { Result } from "../../type/result.type";
 import { useCallback, useEffect } from "react";
-import { AppConfig } from "../type/config.type";
+import { AppConfig } from "../../type/config.type";
+import { ActionItem } from "../../type/header.action";
+import { HeaderAction } from "./HeaderAction";
 
 type HeaderProps = {
   isVisible: boolean;
@@ -46,7 +48,6 @@ export const Header = ({
           sql: code,
         });
         setResult(result);
-        console.log(result);
       }
     } catch (e) {
       console.error(e);
@@ -66,33 +67,34 @@ export const Header = ({
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [handleExecute]);
+
+  const headerActions: ActionItem[] = [
+    {
+      id: "add",
+      iconClass: "ri-add-large-line",
+      className: "item-connection",
+      onClick: () => setIsVisible(!isVisible),
+    },
+    {
+      id: "execute",
+      iconClass: "ri-play-large-line",
+      className: "item-start",
+      onClick: handleExecute,
+    },
+    {
+      id: "theme",
+      iconClass: config.theme === "dark" ? "ri-moon-line" : "ri-sun-line",
+      className: "item-theme",
+      onClick: handleToggleTheme,
+    },
+  ];
   return (
     <header className="header">
       <h3 className="header-logo">grpsm</h3>
-      <ul className="header-list">
-        <li className="list-item">
-          <button
-            className="item-connection"
-            onClick={() => setIsVisible(!isVisible)}
-          >
-            <i className="ri-add-large-line"></i>
-          </button>
-        </li>
-        <li className="list-item">
-          <button className="item-start" onClick={handleExecute}>
-            <i className="ri-play-large-line"></i>
-          </button>
-        </li>
-        <li className="list-item">
-          <button className="item-theme" onClick={handleToggleTheme}>
-            {config.theme === "dark" ? (
-              <i className="ri-moon-line"></i>
-            ) : (
-              <i className="ri-sun-line"></i>
-            )}
-          </button>
-        </li>
-      </ul>
+      <HeaderAction
+        items={headerActions}
+        className="header-list"
+      ></HeaderAction>
     </header>
   );
 };
