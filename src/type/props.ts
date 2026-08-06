@@ -83,3 +83,8 @@ export interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {}
 export interface ConnectionFormProps {
   setConnections: React.Dispatch<React.SetStateAction<Connection[]>>;
 }
+
+export interface ConnectionModalProps {
+  setConnections: React.Dispatch<React.SetStateAction<Connection[]>>;
+  setIsVisible: (visible: boolean) => void;
+}

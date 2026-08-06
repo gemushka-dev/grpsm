@@ -1,16 +1,9 @@
-import { Connection } from "../../type/connection.type";
+import { ConnectionModalProps } from "../../type/props";
 import "../styles/connection.css";
 import { ConnectionForm } from "./ConnectionForm";
 
-type ConnectionProps = {
-  setConnections: React.Dispatch<React.SetStateAction<Connection[]>>;
-  setIsVisible: (visible: boolean) => void;
-};
-
-export const ConnectionModal = ({
-  setConnections,
-  setIsVisible,
-}: ConnectionProps) => {
+export const ConnectionModal = (props: ConnectionModalProps) => {
+  const { setConnections, setIsVisible } = props;
   return (
     <div className="move">
       <span className="close" onClick={() => setIsVisible(false)}>
