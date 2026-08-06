@@ -79,3 +79,7 @@ export interface HeaderProps {
 }
 
 export interface FormFieldProps extends InputHTMLAttributes<HTMLInputElement> {}
+
+export interface ConnectionFormProps {
+  setConnections: React.Dispatch<React.SetStateAction<Connection[]>>;
+}

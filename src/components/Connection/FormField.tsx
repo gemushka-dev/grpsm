@@ -1,7 +1,7 @@
 import { FormFieldProps } from "../../type/props";
 
 export const FormField = (props: FormFieldProps) => {
-  const { type, id, value, onChange, children } = props;
+  const { type = "text", id, value, onChange, children } = props;
 
   return (
     <>
