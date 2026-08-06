@@ -1,31 +1,21 @@
 import "../../styles/header.css";
-import { Connection } from "../../type/connection.type";
 import { invoke } from "@tauri-apps/api/core";
-import { Result } from "../../type/result.type";
 import { useCallback, useEffect } from "react";
 import { AppConfig } from "../../type/config.type";
 import { ActionItem } from "../../type/header.action";
 import { HeaderAction } from "./HeaderAction";
+import { HeaderProps } from "../../type/props";
 
-type HeaderProps = {
-  isVisible: boolean;
-  setIsVisible: (visible: boolean) => void;
-  setResult: React.Dispatch<React.SetStateAction<Result | string>>;
-  activeConnection: Connection | null;
-  code: string;
-  config: AppConfig;
-  setConfig: React.Dispatch<React.SetStateAction<AppConfig>>;
-};
-
-export const Header = ({
-  isVisible,
-  setIsVisible,
-  activeConnection,
-  code,
-  setResult,
-  config,
-  setConfig,
-}: HeaderProps) => {
+export const Header = (props: HeaderProps) => {
+  const {
+    activeConnection,
+    isVisible,
+    setIsVisible,
+    code,
+    setResult,
+    config,
+    setConfig,
+  } = props;
   const handleToggleTheme = useCallback(async () => {
     try {
       const newConfig = {

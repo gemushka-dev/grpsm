@@ -8,6 +8,8 @@ import {
 } from "./database.type";
 import { MetadataItem } from "./metadata";
 import { ActionItem } from "./header.action";
+import { AppConfig } from "./config.type";
+import { Result } from "./result.type";
 
 export interface BaseProps {
   className?: string;
@@ -66,4 +68,14 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 export interface HeaderActionProps extends BaseProps {
   items: ActionItem[];
+}
+
+export interface HeaderProps {
+  isVisible: boolean;
+  setIsVisible: (visible: boolean) => void;
+  setResult: React.Dispatch<React.SetStateAction<Result | string>>;
+  activeConnection: Connection | null;
+  code: string;
+  config: AppConfig;
+  setConfig: React.Dispatch<React.SetStateAction<AppConfig>>;
 }
