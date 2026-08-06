@@ -1,3 +1,4 @@
+import { ButtonHTMLAttributes } from "react";
 import { Connection } from "./connection.type";
 import {
   ColumnInfo,
@@ -56,4 +57,8 @@ export interface SidebarProps {
   onNodeSelect: (node: any) => void;
   pgConnections: Connection[];
   setConnections: React.Dispatch<React.SetStateAction<Connection[]>>;
+}
+
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  text: React.ReactNode;
 }
