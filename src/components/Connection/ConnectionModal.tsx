@@ -1,8 +1,9 @@
 import { ConnectionModalProps } from "../../type/props";
 import "../../styles/connection.css";
 import { ConnectionForm } from "./ConnectionForm";
+import { memo } from "react";
 
-export const ConnectionModal = (props: ConnectionModalProps) => {
+export const ConnectionModal = memo((props: ConnectionModalProps) => {
   const { setConnections, setIsVisible } = props;
   return (
     <div className="move">
@@ -12,4 +13,4 @@ export const ConnectionModal = (props: ConnectionModalProps) => {
       <ConnectionForm setConnections={setConnections}></ConnectionForm>
     </div>
   );
-};
+});

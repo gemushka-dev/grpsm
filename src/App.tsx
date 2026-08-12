@@ -63,13 +63,13 @@ export const App = () => {
   return (
     <div className="container">
       <Header
-        isVisible={isVisible}
-        setIsVisible={setIsVisible}
-        code={code}
         setResult={setResult}
-        activeConnection={activeConnection}
-        config={config}
+        setIsVisible={setIsVisible}
         setConfig={setConfig}
+        isVisible={isVisible}
+        activeConnection={activeConnection}
+        code={code}
+        config={config}
       ></Header>
       {isVisible ? (
         <Draggable cancel=".move-input, .close, .btn-connect" nodeRef={nodeRef}>
@@ -85,7 +85,7 @@ export const App = () => {
       <div className="main-part">
         <Sidebar
           pgConnections={connections}
-          onNodeSelect={(conn) => setActiveConnection(conn)}
+          onNodeSelect={setActiveConnection}
           setConnections={setConnections}
         ></Sidebar>
 

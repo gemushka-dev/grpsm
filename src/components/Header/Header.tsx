@@ -1,12 +1,12 @@
 import "../../styles/header.css";
 import { invoke } from "@tauri-apps/api/core";
-import { useCallback, useEffect } from "react";
+import { memo, useCallback, useEffect } from "react";
 import { AppConfig } from "../../type/config.type";
 import { ActionItem } from "../../type/header.action";
 import { HeaderAction } from "./HeaderAction";
 import { HeaderProps } from "../../type/props";
 
-export const Header = (props: HeaderProps) => {
+export const Header = memo((props: HeaderProps) => {
   const {
     activeConnection,
     isVisible,
@@ -87,4 +87,4 @@ export const Header = (props: HeaderProps) => {
       ></HeaderAction>
     </header>
   );
-};
+});
